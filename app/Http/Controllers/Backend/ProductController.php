@@ -50,6 +50,9 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
+            'is_featured' => 'boolean',        // Add this
+            'is_hot_trend' => 'boolean',       // Add this
+            'is_best_seller' => 'boolean',     // Add this
         ]);
 
         // Handle image uploads
@@ -77,6 +80,9 @@ class ProductController extends Controller
             'images' => $imagePaths,
             'status' => $request->status,
             'featured' => $request->filled('featured'),
+            'is_featured' => $request->filled('is_featured'),      // Add this
+            'is_hot_trend' => $request->filled('is_hot_trend'),    // Add this
+            'is_best_seller' => $request->filled('is_best_seller'),// Add this
         ]);
 
         return redirect()->route('admin.products.index')
@@ -119,6 +125,9 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
+            'is_featured' => 'boolean',        // Add this
+            'is_hot_trend' => 'boolean',       // Add this
+            'is_best_seller' => 'boolean',     // Add this
         ]);
 
         $imagePaths = $product->images;
@@ -154,6 +163,9 @@ class ProductController extends Controller
             'images' => $imagePaths,
             'status' => $request->status,
             'featured' => $request->filled('featured'),
+            'is_featured' => $request->filled('is_featured'),      // Add this
+            'is_hot_trend' => $request->filled('is_hot_trend'),    // Add this
+            'is_best_seller' => $request->filled('is_best_seller'),// Add this
         ]);
 
         return redirect()->route('admin.products.index')

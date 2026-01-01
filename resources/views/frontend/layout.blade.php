@@ -21,6 +21,11 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/owl.carousel.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('frontend/css/slicknav.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}" type="text/css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @yield('styles')
 </head>
@@ -92,7 +97,8 @@
 
     {{-- Page content --}}
     @yield('content')
-
+    {{-- Instagram Section --}}
+    @include('frontend.partials.instagram')
     <!-- Footer Section Begin -->
     <footer class="footer">
         <div class="container">
@@ -188,49 +194,87 @@
     <script src="{{ asset('frontend/js/main.js') }}"></script>
 
     <!-- Custom JavaScript for AJAX -->
-    <script>
-    $(document).ready(function() {
-        // AJAX setup
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+<script>
+$(document).ready(function() {
+    // AJAX setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // SweetAlert2 Toast function
+    function showSwalToast(icon, title, position = 'top-end') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: position,
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         });
 
-        // Add to cart functionality
-        $('.add-to-cart-btn').on('click', function(e) {
-            e.preventDefault();
-            var productId = $(this).data('product-id');
-            var quantity = $(this).data('quantity') || 1;
-            var size = $(this).data('size') || 'M';
-            var color = $(this).data('color') || 'Black';
+        Toast.fire({
+            icon: icon,
+            title: title
+        });
+    }
 
-            $.ajax({
-                url: '{{ route("cart.add") }}',
-                type: 'POST',
-                data: {
-                    product_id: productId,
-                    quantity: quantity,
-                    size: size,
-                    color: color
-                },
-                success: function(response) {
+    // Add to cart functionality with SweetAlert
+    $('.add-to-cart-btn').on('click', function(e) {
+        e.preventDefault();
+
+        var productId = $(this).data('product-id');
+        var quantity = $(this).data('quantity') || 1;
+        var size = $(this).data('size') || 'M';
+        var color = $(this).data('color') || 'Black';
+        var productName = $(this).closest('.product__item').find('h6 a').text();
+
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                quantity: quantity,
+                size: size,
+                color: color
+            },
+            success: function(response) {
+                if (response.success) {
                     // Update cart count
                     $('.tip').text(response.cart_count || 0);
 
-                    // Show success message
-                    alert('Product added to cart successfully!');
-                },
-                error: function(xhr) {
-                    alert('Error adding product to cart');
+                    // Show success toast
+                    showSwalToast('success', `${productName} added to cart!`);
+                } else {
+                    showSwalToast('error', response.message || 'Failed to add to cart');
                 }
-            });
+            },
+            error: function(xhr) {
+                showSwalToast('error', 'Error adding product to cart');
+            }
         });
     });
+
+    // Image path fix
+    document.addEventListener('DOMContentLoaded', function(){
+        var imgPrefix = '{{ asset("frontend/img") }}' + '/';
+        document.querySelectorAll('[data-setbg]').forEach(function(el){
+            var bg = el.getAttribute('data-setbg');
+            if(bg && bg.indexOf('img/')===0) el.setAttribute('data-setbg', bg.replace(/^img\//, imgPrefix));
+        });
+        document.querySelectorAll('img').forEach(function(img){
+            var s = img.getAttribute('src');
+            if(s && s.indexOf('img/')===0) img.setAttribute('src', s.replace(/^img\//, imgPrefix));
+        });
+    });
+
     /*--------------------------
     Banner Slider with Dynamic Background
-----------------------------*/
-$(document).ready(function() {
+    ----------------------------*/
     // Check if we have a dynamic banner
     if ($('#dynamic-banner').length > 0 && $('#banner-carousel').length > 0) {
 
@@ -281,7 +325,7 @@ $(document).ready(function() {
         });
     }
 });
-    </script>
-    @yield('scripts')
+</script>
+@yield('scripts')
 </body>
 </html>

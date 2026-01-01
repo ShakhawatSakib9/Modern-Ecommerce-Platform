@@ -219,269 +219,222 @@
     </section>
     <!-- Product Section End -->
 
-<!-- Banner Section Begin -->
-<section class="banner" id="dynamic-banner">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-7 col-lg-8 m-auto">
-                <div class="banner__slider owl-carousel" id="banner-carousel">
-                    @foreach($banners as $banner)
-                    <div class="banner__item" data-bg="{{ asset('storage/' . $banner->image) }}">
-                        <div class="banner__text">
-                            @if($banner->subtitle)<span>{{ $banner->subtitle }}</span>@endif
-                            <h1>{{ $banner->title }}</h1>
-                            @if($banner->description)<p class="mb-3">{{ $banner->description }}</p>@endif
-                            <a href="{{ url($banner->button_link) }}" class="d-inline-block">{{ $banner->button_text }}</a>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Banner Section End -->
-
-<!-- Trend Section Begin -->
-<section class="trend spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Hot Trend</h4>
-                    </div>
-                    @foreach($featured_products->take(3) as $product)
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="{{ $product->getFirstImageUrl() ?? asset('frontend/img/trend/ht-1.jpg') }}" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6><a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a></h6>
-                            <div class="rating">
-                                @for($i = 1; $i <= 5; $i++)
-                                <i class="fa fa-star{{ $i <= 4 ? '' : '-o' }}"></i>
-                                @endfor
-                            </div>
-                            <div class="product__price">${{ number_format($product->selling_price, 2) }}</div>
-                        </div>
-                    </div>
-                    @endforeach
-
-                    @if(count($featured_products) == 0)
-                    @for($i = 1; $i <= 3; $i++)
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="{{ asset('frontend/img/trend/ht-' . $i . '.jpg') }}" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6><a href="#">Trending Product {{ $i }}</a></h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$59.0</div>
-                        </div>
-                    </div>
-                    @endfor
-                    @endif
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Best seller</h4>
-                    </div>
-                    @if(count($best_sellers) > 0)
-                        @foreach($best_sellers->take(3) as $product)
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="{{ $product->getFirstImageUrl() ?? asset('frontend/img/trend/bs-1.jpg') }}" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6><a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a></h6>
-                                <div class="rating">
-                                    @for($i = 1; $i <= 5; $i++)
-                                    <i class="fa fa-star{{ $i <= 4 ? '' : '-o' }}"></i>
-                                    @endfor
-                                </div>
-                                <div class="product__price">${{ number_format($product->selling_price, 2) }}</div>
+    <!-- Banner Section Begin -->
+    <section class="banner" id="dynamic-banner">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-7 col-lg-8 m-auto">
+                    <div class="banner__slider owl-carousel" id="banner-carousel">
+                        @foreach($banners as $banner)
+                        <div class="banner__item" data-bg="{{ asset('storage/' . $banner->image) }}">
+                            <div class="banner__text">
+                                @if($banner->subtitle)<span>{{ $banner->subtitle }}</span>@endif
+                                <h1>{{ $banner->title }}</h1>
+                                @if($banner->description)<p class="mb-3">{{ $banner->description }}</p>@endif
+                                <a href="{{ url($banner->button_link) }}" class="d-inline-block">{{ $banner->button_text }}</a>
                             </div>
                         </div>
                         @endforeach
-                    @else
-                    @for($i = 1; $i <= 3; $i++)
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="{{ asset('frontend/img/trend/bs-' . $i . '.jpg') }}" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6><a href="#">Best Seller {{ $i }}</a></h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$59.0</div>
-                        </div>
                     </div>
-                    @endfor
-                    @endif
                 </div>
             </div>
+        </div>
+    </section>
+    <!-- Banner Section End -->
 
+<!-- Trend Section -->
+<section class="trend spad">
+    <div class="container">
+        <div class="row">
+            <!-- Hot Trend -->
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="trend__content">
                     <div class="section-title">
-                        <h4>Featured</h4>
+                        <h4><i class="fa fa-fire text-danger me-2"></i>Hot Trend</h4>
                     </div>
-                    @foreach($featured_products->take(3) as $product)
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="{{ $product->getFirstImageUrl() ?? asset('frontend/img/trend/f-1.jpg') }}" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6><a href="{{ route('product.details', $product->slug) }}">{{ $product->name }}</a></h6>
-                            <div class="rating">
-                                @for($i = 1; $i <= 5; $i++)
-                                <i class="fa fa-star{{ $i <= 4 ? '' : '-o' }}"></i>
-                                @endfor
+                    @forelse($hot_trend_products->take(3) as $product)
+                        @include('frontend.partials.trend-item', ['product' => $product])
+                    @empty
+                        @for($i = 1; $i <= 3; $i++)
+                        <div class="trend__item">
+                            <div class="trend__item__pic">
+                                <img src="{{ asset('frontend/img/trend/ht-' . $i . '.jpg') }}" alt="">
                             </div>
-                            <div class="product__price">${{ number_format($product->selling_price, 2) }}</div>
+                            <div class="trend__item__text">
+                                <h6><a href="#">Trending Product {{ $i }}</a></h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">$59.0</div>
+                            </div>
                         </div>
-                    </div>
-                    @endforeach
+                        @endfor
+                    @endforelse
+                </div>
+            </div>
 
-                    @if(count($featured_products) == 0)
-                    @for($i = 1; $i <= 3; $i++)
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="{{ asset('frontend/img/trend/f-' . $i . '.jpg') }}" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6><a href="#">Featured {{ $i }}</a></h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$59.0</div>
-                        </div>
+            <!-- Best Seller -->
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="trend__content">
+                    <div class="section-title">
+                        <h4><i class="fa fa-trophy text-warning me-2"></i>Best Seller</h4>
                     </div>
-                    @endfor
-                    @endif
+                    @forelse($best_seller_products->take(3) as $product)
+                        @include('frontend.partials.trend-item', ['product' => $product])
+                    @empty
+                        @for($i = 1; $i <= 3; $i++)
+                        <div class="trend__item">
+                            <div class="trend__item__pic">
+                                <img src="{{ asset('frontend/img/trend/bs-' . $i . '.jpg') }}" alt="">
+                            </div>
+                            <div class="trend__item__text">
+                                <h6><a href="#">Best Seller {{ $i }}</a></h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">$59.0</div>
+                            </div>
+                        </div>
+                        @endfor
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Featured -->
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="trend__content">
+                    <div class="section-title">
+                        <h4><i class="fa fa-star text-primary me-2"></i>Featured</h4>
+                    </div>
+                    @forelse($featured_products->take(3) as $product)
+                        @include('frontend.partials.trend-item', ['product' => $product])
+                    @empty
+                        @for($i = 1; $i <= 3; $i++)
+                        <div class="trend__item">
+                            <div class="trend__item__pic">
+                                <img src="{{ asset('frontend/img/trend/f-' . $i . '.jpg') }}" alt="">
+                            </div>
+                            <div class="trend__item__text">
+                                <h6><a href="#">Featured {{ $i }}</a></h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">$59.0</div>
+                            </div>
+                        </div>
+                        @endfor
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Trend Section End -->
 
 <!-- Discount Section Begin -->
+@if($discount_banners->count() > 0)
 <section class="discount">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-6 p-0">
-                <div class="discount__pic">
-                    <img src="{{ asset('frontend/img/discount.jpg') }}" alt="">
-                </div>
-            </div>
-            <div class="col-lg-6 p-0">
-                <div class="discount__text">
-                    <div class="discount__text__title">
-                        <span>Discount</span>
-                        <h2>Summer 2024</h2>
-                        <h5><span>Sale</span> 50%</h5>
-                    </div>
-                    <div class="discount__countdown" id="countdown-time">
-                        <div class="countdown__item">
-                            <span>22</span>
-                            <p>Days</p>
-                        </div>
-                        <div class="countdown__item">
-                            <span>18</span>
-                            <p>Hour</p>
-                        </div>
-                        <div class="countdown__item">
-                            <span>46</span>
-                            <p>Min</p>
-                        </div>
-                        <div class="countdown__item">
-                            <span>05</span>
-                            <p>Sec</p>
+        <div class="discount__slider owl-carousel" id="discount-slider">
+            @foreach($discount_banners as $banner)
+            <div class="discount__slide">
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="discount__pic">
+                            <img src="{{ $banner->getImageUrl() }}" alt="{{ $banner->title }}">
                         </div>
                     </div>
-                    <a href="{{ route('shop') }}" class="d-inline-block mt-3">Shop now</a>
+                    <div class="col-lg-6 p-0">
+                        <div class="discount__text">
+                            <div class="discount__text__title">
+                                <span>{{ $banner->subtitle ?? 'Discount' }}</span>
+                                <h2>{{ $banner->title }}</h2>
+                                <h5><span>Sale</span> {{ $banner->discount_percentage }}%</h5>
+                            </div>
+
+                            @if($banner->end_date)
+                            <div class="discount__countdown" data-end-date="{{ $banner->end_date->format('Y/m/d H:i:s') }}">
+                                <div class="countdown__item">
+                                    <span class="countdown-days">00</span>
+                                    <p>Days</p>
+                                </div>
+                                <div class="countdown__item">
+                                    <span class="countdown-hours">00</span>
+                                    <p>Hour</p>
+                                </div>
+                                <div class="countdown__item">
+                                    <span class="countdown-minutes">00</span>
+                                    <p>Min</p>
+                                </div>
+                                <div class="countdown__item">
+                                    <span class="countdown-seconds">00</span>
+                                    <p>Sec</p>
+                                </div>
+                            </div>
+                            @endif
+
+                            <a href="{{ route('shop') }}" class="d-inline-block mt-3">Shop now</a>
+
+                            @if($banner->discount_code)
+                            <div class="mt-2">
+                                <small class="text-light">Use code: <strong>{{ $banner->discount_code }}</strong></small>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
+            @endforeach
         </div>
     </div>
 </section>
+@endif
 <!-- Discount Section End -->
 
 <!-- Services Section Begin -->
+@if($services->count() > 0)
 <section class="services spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            @foreach($services as $service)
+            @php
+                $count = $services->count();
+                $col = 'col-md-3 col-sm-6'; // Default for 4+
+
+                if ($count == 1) {
+                    $col = 'col-md-6 col-sm-12';
+                } elseif ($count == 2) {
+                    $col = 'col-md-6 col-sm-6';
+                } elseif ($count == 3) {
+                    $col = 'col-md-4 col-sm-6';
+                }
+            @endphp
+            <div class="{{ $col }}">
                 <div class="services__item">
-                    <i class="fa fa-car"></i>
-                    <h6>Free Shipping</h6>
-                    <p>For all oder over $99</p>
+                    <i class="{{ $service->icon }}"></i>
+                    <h6>{{ $service->title }}</h6>
+                    <p>{{ $service->description }}</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="services__item">
-                    <i class="fa fa-money"></i>
-                    <h6>Money Back Guarantee</h6>
-                    <p>If good have Problems</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="services__item">
-                    <i class="fa fa-support"></i>
-                    <h6>Online Support 24/7</h6>
-                    <p>Dedicated support</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="services__item">
-                    <i class="fa fa-headphones"></i>
-                    <h6>Payment Secure</h6>
-                    <p>100% secure payment</p>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
+@endif
 <!-- Services Section End -->
 
-<!-- Instagram Begin -->
-<div class="instagram">
-    <div class="container-fluid">
-        <div class="row">
-            @for($i = 1; $i <= 6; $i++)
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="{{ asset('frontend/img/instagram/insta-' . $i . '.jpg') }}">
-                    <div class="instagram__text">
-                        <i class="fa fa-instagram"></i>
-                        <a href="#">@ fashion_shop</a>
-                    </div>
-                </div>
-            </div>
-            @endfor
-        </div>
-    </div>
-</div>
-<!-- Instagram End -->
+
 @push('scripts')
 <script>
 $(document).ready(function() {

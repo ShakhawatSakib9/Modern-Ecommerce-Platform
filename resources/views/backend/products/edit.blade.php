@@ -1,19 +1,20 @@
 @extends('backend.layouts.app')
 
-@section('title', 'Add Product')
+@section('title', 'Edit Product')
 
 @section('content')
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
             <div class="row">
                 <div class="col-md-8">
                     <div class="mb-3">
                         <label for="name" class="form-label">Product Name *</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror"
-                               id="name" name="name" value="{{ old('name') }}" required>
+                               id="name" name="name" value="{{ old('name', $product->name) }}" required>
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
@@ -25,7 +26,7 @@
                                         id="category_id" name="category_id" required>
                                     <option value="">Select Category</option>
                                     @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                     @endforeach
@@ -40,7 +41,11 @@
                                 <select class="form-select @error('sub_category_id') is-invalid @enderror"
                                         id="sub_category_id" name="sub_category_id" required>
                                     <option value="">Select Sub Category</option>
-                                    <!-- Will be populated by AJAX -->
+                                    @foreach($subcategories as $subcategory)
+                                    <option value="{{ $subcategory->id }}" {{ old('sub_category_id', $product->sub_category_id) == $subcategory->id ? 'selected' : '' }}>
+                                        {{ $subcategory->name }}
+                                    </option>
+                                    @endforeach
                                 </select>
                                 @error('sub_category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
@@ -50,32 +55,55 @@
                     <div class="mb-3">
                         <label for="description" class="form-label">Description *</label>
                         <textarea class="form-control @error('description') is-invalid @enderror"
-                                  id="description" name="description" rows="4" required>{{ old('description') }}</textarea>
+                                  id="description" name="description" rows="4" required>{{ old('description', $product->description) }}</textarea>
                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="short_description" class="form-label">Short Description</label>
+                        <textarea class="form-control @error('short_description') is-invalid @enderror"
+                                  id="short_description" name="short_description" rows="2">{{ old('short_description', $product->short_description) }}</textarea>
+                        @error('short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
                 <div class="col-md-4">
+                    <!-- Current Images -->
                     <div class="mb-3">
-                        <label for="images" class="form-label">Product Images *</label>
+                        <label class="form-label">Current Images</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @if($product->images && count($product->images) > 0)
+                                @foreach($product->images as $image)
+                                <div class="position-relative">
+                                    <img src="{{ asset('storage/' . $image) }}" class="img-thumbnail" style="width: 80px; height: 80px;">
+                                </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted">No images</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Upload New Images</label>
                         <input type="file" class="form-control @error('images') is-invalid @enderror"
-                               id="images" name="images[]" multiple accept="image/*" required>
+                               id="images" name="images[]" multiple accept="image/*">
                         @error('images')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div class="form-text">Select 1-5 images</div>
+                        <div class="form-text">Leave empty to keep existing images</div>
                         <div id="image-preview" class="mt-2"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="regular_price" class="form-label">Regular Price ($) *</label>
                         <input type="number" step="0.01" class="form-control @error('regular_price') is-invalid @enderror"
-                               id="regular_price" name="regular_price" value="{{ old('regular_price') }}" required>
+                               id="regular_price" name="regular_price" value="{{ old('regular_price', $product->regular_price) }}" required>
                         @error('regular_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="discount_price" class="form-label">Discount Price ($)</label>
                         <input type="number" step="0.01" class="form-control @error('discount_price') is-invalid @enderror"
-                               id="discount_price" name="discount_price" value="{{ old('discount_price') }}">
+                               id="discount_price" name="discount_price" value="{{ old('discount_price', $product->discount_price) }}">
                         @error('discount_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -86,8 +114,17 @@
                     <div class="mb-3">
                         <label for="stock_quantity" class="form-label">Stock Quantity *</label>
                         <input type="number" class="form-control @error('stock_quantity') is-invalid @enderror"
-                               id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', 0) }}" required>
+                               id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" required>
                         @error('stock_quantity')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="sku" class="form-label">SKU</label>
+                        <input type="text" class="form-control @error('sku') is-invalid @enderror"
+                               id="sku" name="sku" value="{{ old('sku', $product->sku) }}">
+                        @error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
@@ -99,7 +136,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="sizes[]"
                                        value="{{ $size }}" id="size-{{ $size }}"
-                                       {{ in_array($size, old('sizes', [])) ? 'checked' : '' }}>
+                                       {{ in_array($size, old('sizes', $product->sizes ?? [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="size-{{ $size }}">{{ $size }}</label>
                             </div>
                             @endforeach
@@ -116,7 +153,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="colors[]"
                                        value="{{ $color }}" id="color-{{ $color }}"
-                                       {{ in_array($color, old('colors', [])) ? 'checked' : '' }}>
+                                       {{ in_array($color, old('colors', $product->colors ?? [])) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="color-{{ $color }}">{{ $color }}</label>
                             </div>
                             @endforeach
@@ -124,16 +161,27 @@
                         @error('colors')<div class="text-danger small">{{ $message }}</div>@enderror
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-4">
                     <div class="mb-3">
                         <label for="status" class="form-label">Status *</label>
                         <select class="form-select @error('status') is-invalid @enderror"
                                 id="status" name="status" required>
-                            <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="active" {{ old('status', $product->status) == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ old('status', $product->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
                         </select>
                         @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="featured" id="featured" value="1"
+                                   {{ old('featured', $product->featured) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="featured">Mark as Featured (Old System)</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,7 +196,7 @@
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="is_featured"
-                                               id="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
+                                               id="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
                                         <label class="form-check-label fw-bold d-flex align-items-center" for="is_featured">
                                             <span class="badge bg-primary me-2"><i class="fa fa-star"></i></span>
                                             Featured Product
@@ -159,7 +207,7 @@
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="is_hot_trend"
-                                               id="is_hot_trend" value="1" {{ old('is_hot_trend') ? 'checked' : '' }}>
+                                               id="is_hot_trend" value="1" {{ old('is_hot_trend', $product->is_hot_trend) ? 'checked' : '' }}>
                                         <label class="form-check-label fw-bold d-flex align-items-center" for="is_hot_trend">
                                             <span class="badge bg-danger me-2"><i class="fa fa-fire"></i></span>
                                             Hot Trend
@@ -170,7 +218,7 @@
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="is_best_seller"
-                                               id="is_best_seller" value="1" {{ old('is_best_seller') ? 'checked' : '' }}>
+                                               id="is_best_seller" value="1" {{ old('is_best_seller', $product->is_best_seller) ? 'checked' : '' }}>
                                         <label class="form-check-label fw-bold d-flex align-items-center" for="is_best_seller">
                                             <span class="badge bg-warning me-2"><i class="fa fa-trophy"></i></span>
                                             Best Seller
@@ -186,7 +234,7 @@
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Product</button>
+                <button type="submit" class="btn btn-primary">Update Product</button>
             </div>
         </form>
     </div>
@@ -195,27 +243,6 @@
 
 @push('scripts')
 <script>
-// Category change event
-document.getElementById('category_id').addEventListener('change', function() {
-    const categoryId = this.value;
-    const subCategorySelect = document.getElementById('sub_category_id');
-
-    if (!categoryId) {
-        subCategorySelect.innerHTML = '<option value="">Select Sub Category</option>';
-        return;
-    }
-
-    fetch(`/admin/subcategories-by-category/${categoryId}`)
-        .then(response => response.json())
-        .then(data => {
-            let options = '<option value="">Select Sub Category</option>';
-            data.forEach(sub => {
-                options += `<option value="${sub.id}">${sub.name}</option>`;
-            });
-            subCategorySelect.innerHTML = options;
-        });
-});
-
 // Image preview
 document.getElementById('images').addEventListener('change', function(e) {
     const preview = document.getElementById('image-preview');

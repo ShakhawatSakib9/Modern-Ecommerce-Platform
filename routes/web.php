@@ -13,7 +13,10 @@ use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\BannerController; // Add this line
+use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\DiscountBannerController;
+use App\Http\Controllers\Backend\ServiceController;
+use App\Http\Controllers\Backend\InstagramPostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +37,7 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart/summary', [CartController::class, 'getCartSummary'])->name('cart.summary');
 
 // Checkout Routes
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
@@ -124,6 +128,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Banners (Add this new route group)
         Route::resource('banners', BannerController::class);
         Route::post('banners/{banner}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggle-status');
+        // Discount Banners
+        Route::resource('discount-banners', DiscountBannerController::class);
+        Route::post('discount-banners/{discountBanner}/toggle-status', [DiscountBannerController::class, 'toggleStatus'])->name('discount-banners.toggle-status');
+        // Services
+        Route::resource('services', ServiceController::class);
+        Route::post('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
+        // Instagram Posts
+        Route::resource('instagram-posts', InstagramPostController::class);
+        Route::post('instagram-posts/{instagramPost}/toggle-status', [InstagramPostController::class, 'toggleStatus'])->name('instagram-posts.toggle-status');
     });
 });
 

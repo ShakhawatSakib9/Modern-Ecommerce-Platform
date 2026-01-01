@@ -572,180 +572,327 @@ ol {
 	margin-right: 0;
 }
 
-/*---------------------
-  Trend
------------------------*/
-
-.trend {
-	padding-top: 80px;
-	padding-bottom: 50px;
+/* Trend Section Enhancements */
+.trend__content {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    height: 100%;
+    transition: transform 0.3s ease;
 }
 
-.trend__content .section-title h4 {
-	font-size: 20px;
+.trend__content:hover {
+    transform: translateY(-5px);
 }
 
-.trend__content .section-title h4:after {
-	bottom: -6px;
+.section-title h4 i {
+    font-size: 20px;
 }
 
 .trend__item {
-	overflow: hidden;
-	margin-bottom: 35px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.trend__item:hover {
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
 .trend__item__pic {
-	float: left;
-	margin-right: 25px;
+    position: relative;
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.trend__item__pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sale-badge, .new-badge {
+    position: absolute;
+    top: 5px;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: white;
+}
+
+.sale-badge {
+    background: #e53637;
+    left: 5px;
+}
+
+.new-badge {
+    background: #28a745;
+    right: 5px;
 }
 
 .trend__item__text {
-	overflow: hidden;
+    flex: 1;
 }
 
 .trend__item__text h6 {
-	font-size: 14px;
-	color: #111111;
-	margin-bottom: 5px;
+    font-size: 14px;
+    margin-bottom: 5px;
 }
 
-.trend__item__text .rating {
-	line-height: 18px;
-	margin-bottom: 6px;
+.trend__item__text h6 a {
+    color: #111;
+    transition: color 0.3s;
 }
 
-.trend__item__text .rating i {
-	font-size: 10px;
-	color: #e3c01c;
-	margin-right: -4px;
+.trend__item__text h6 a:hover {
+    color: #e53637;
 }
 
-.trend__item__text .rating i:last-child {
-	margin-right: 0;
+.rating {
+    margin-bottom: 5px;
 }
 
-.trend__item__text .product__price {
-	color: #111111;
-	font-weight: 600;
+.rating i {
+    font-size: 12px;
+    color: #e3c01c;
+    margin-right: 1px;
 }
 
-.trend__item__text .product__price span {
-	font-size: 14px;
-	color: #b1b0b0;
-	text-decoration: line-through;
-	margin-left: 4px;
+.product__price {
+    font-weight: 600;
+    color: #111;
 }
 
+.product__price span {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 14px;
+    margin-left: 5px;
+}
 /*---------------------
   Discount
 -----------------------*/
 
+.discount {
+    position: relative;
+    overflow: hidden; /* Prevent any overflow */
+}
+
 .discount__pic img {
-	min-width: 100%;
-	height: 100%;
+    min-width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .discount__text {
-	background: #f4f4f4;
-	height: 390px;
-	padding: 75px 90px 50px;
-	text-align: center;
+    background: #f4f4f4;
+    height: 390px;
+    padding: 75px 90px 50px;
+    text-align: center;
 }
 
 .discount__text a {
-	font-size: 14px;
-	color: #111111;
-	text-transform: uppercase;
-	font-weight: 700;
-	position: relative;
-	padding: 0 0 3px;
-	display: inline-block;
+    font-size: 14px;
+    color: #111111;
+    text-transform: uppercase;
+    font-weight: 700;
+    position: relative;
+    padding: 0 0 3px;
+    display: inline-block;
 }
 
 .discount__text a:after {
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	height: 2px;
-	width: 100%;
-	background: #ca1515;
-	content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: #ca1515;
+    content: "";
 }
 
 .discount__text__title {
-	text-align: center;
-	position: relative;
-	z-index: 1;
-	margin-bottom: 60px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 60px;
 }
 
 .discount__text__title:after {
-	position: absolute;
-	left: 50%;
-	top: -38px;
-	height: 183px;
-	width: 183px;
-	background: #ffffff;
-	content: "";
-	border-radius: 50%;
-	z-index: -1;
-	margin-left: -91.5px;
+    position: absolute;
+    left: 50%;
+    top: -38px;
+    height: 183px;
+    width: 183px;
+    background: #ffffff;
+    content: "";
+    border-radius: 50%;
+    z-index: -1;
+    margin-left: -91.5px;
 }
 
 .discount__text__title span {
-	font-size: 12px;
-	color: #111111;
-	font-weight: 500;
-	text-transform: uppercase;
+    font-size: 12px;
+    color: #111111;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
 .discount__text__title h2 {
-	font-size: 60px;
-	color: #ca1515;
-	font-family: "Cookie", cursive;
-	line-height: 46px;
-	margin-bottom: 10px;
+    font-size: 60px;
+    color: #ca1515;
+    font-family: "Cookie", cursive;
+    line-height: 46px;
+    margin-bottom: 10px;
 }
 
 .discount__text__title h5 {
-	color: #ca1515;
-	font-weight: 700;
+    color: #ca1515;
+    font-weight: 700;
 }
 
 .discount__text__title h5 span {
-	font-size: 14px;
-	color: #111111;
-	margin-right: 4px;
+    font-size: 14px;
+    color: #111111;
+    margin-right: 4px;
 }
 
 .discount__countdown {
-	text-align: center;
-	margin-bottom: 10px;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .countdown__item {
-	margin-bottom: 15px;
-	float: left;
-	width: 25%;
+    margin-bottom: 15px;
+    float: left;
+    width: 25%;
 }
 
 .countdown__item:last-child {
-	margin-right: 0;
+    margin-right: 0;
 }
 
 .countdown__item span {
-	font-size: 30px;
-	font-weight: 600;
-	color: #111111;
-	display: inline-block;
+    font-size: 30px;
+    font-weight: 600;
+    color: #111111;
+    display: inline-block;
 }
 
 .countdown__item p {
-	color: #111111;
-	margin-bottom: 0;
-	display: inline-block;
-	font-weight: 500;
+    color: #111111;
+    margin-bottom: 0;
+    display: inline-block;
+    font-weight: 500;
 }
+
+/*--------------------------------------------------
+  Discount Slider (Fixed - No Side Preview)
+---------------------------------------------------*/
+
+/* Hide any overflow from the container */
+.discount .container {
+    overflow: hidden;
+    position: relative;
+}
+
+/* Main slider container */
+.discount__slider.owl-carousel {
+    position: relative;
+    width: 100%;
+}
+
+/* Each slide - takes full width */
+.discount__slide {
+    width: 100%;
+    float: left; /* Important for single item display */
+}
+
+/* Force Owl Carousel to hide all other slides */
+.discount__slider .owl-stage-outer {
+    overflow: hidden !important;
+    width: 100%;
+}
+
+/* Navigation arrows */
+.discount__slider .owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+}
+
+.discount__slider .owl-nav button {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.8) !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.discount__slider .owl-nav button:hover {
+    background: white !important;
+    transform: scale(1.1);
+}
+
+.discount__slider .owl-nav button span {
+    font-size: 24px;
+    color: #333;
+    line-height: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dots navigation */
+.discount__slider .owl-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 5;
+}
+
+.discount__slider .owl-dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 50%;
+    margin: 0 5px;
+    display: inline-block;
+    transition: all 0.3s;
+}
+
+.discount__slider .owl-dot.active {
+    background: white !important;
+    transform: scale(1.2);
+}
+
 
 /*---------------------
   Services
@@ -780,71 +927,166 @@ ol {
 	margin-bottom: 0;
 }
 
+/* Simple alignment fixes */
+@media (min-width: 768px) {
+    .services .row {
+        justify-content: center;
+    }
+
+    /* Single service - center it */
+    .services-single .col-md-6 {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
 /*---------------------
   Instagram
 -----------------------*/
 
 .instagram__item {
-	height: 320px;
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
-	align-items: center;
-	-webkit-box-pack: center;
-	-ms-flex-pack: center;
-	justify-content: center;
-	position: relative;
-	z-index: 1;
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    overflow: hidden;
+    display: block;
+}
+
+.instagram__item.set-bg {
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
 }
 
 .instagram__item:hover:after {
-	opacity: 1;
+    opacity: 1;
 }
 
 .instagram__item:hover .instagram__text {
-	opacity: 1;
-	visibility: visible;
+    opacity: 1;
+    visibility: visible;
 }
 
 .instagram__item:after {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 100%;
-	width: 100%;
-	background: rgba(255, 255, 255, 0.9);
-	content: "";
-	opacity: 0;
-	z-index: -1;
-	-webkit-transition: all, 0.3s;
-	-o-transition: all, 0.3s;
-	transition: all, 0.3s;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    content: "";
+    opacity: 0;
+    z-index: 1;
+    transition: all 0.3s;
 }
 
 .instagram__text {
-	text-align: center;
-	opacity: 0;
-	visibility: hidden;
-	-webkit-transition: all, 0.3s;
-	-o-transition: all, 0.3s;
-	transition: all, 0.3s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 2;
+    width: 100%;
+    padding: 20px;
 }
 
 .instagram__text i {
-	font-size: 30px;
-	color: #0d0d0d;
+    font-size: 30px;
+    color: #0d0d0d;
 }
 
 .instagram__text a {
-	font-size: 16px;
-	color: #0d0d0d;
-	font-weight: 500;
-	display: block;
-	margin-top: 10px;
+    font-size: 16px;
+    color: #0d0d0d;
+    font-weight: 500;
+    display: block;
+    margin-top: 10px;
 }
 
+/* Make sure all columns are same size */
+.instagram .col-lg-2 {
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+}
+
+/* Hide empty columns on mobile */
+@media (max-width: 767px) {
+    .instagram .d-none.d-md-block {
+        display: none !important;
+    }
+}
+
+/* Slider styles */
+.instagram__slider.owl-carousel {
+    position: relative;
+    margin: 0;
+}
+
+.instagram__slide {
+    padding: 0 10px;
+}
+
+.instagram__slider .owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    pointer-events: none;
+}
+
+.instagram__slider .owl-nav button {
+    pointer-events: all;
+    background: rgba(0, 0, 0, 0.5) !important;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    border: none;
+}
+
+.instagram__slider .owl-nav button span {
+    font-size: 18px;
+    color: white;
+    line-height: 1;
+}
+
+.instagram__slider .owl-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.instagram__slider .owl-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 50%;
+    margin: 0 4px;
+    display: inline-block;
+    transition: all 0.3s;
+}
+
+.instagram__slider .owl-dot.active {
+    background: white !important;
+}
+
+@media (max-width: 767px) {
+    .instagram__slider .owl-nav {
+        display: none;
+    }
+}
 /*---------------------
   Footer
 -----------------------*/

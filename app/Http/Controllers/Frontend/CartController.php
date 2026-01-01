@@ -13,25 +13,31 @@ class CartController extends Controller
     {
         $cart = Session::get('cart', []);
         $cartItems = [];
+        $subtotal = 0;
         $total = 0;
 
-        foreach ($cart as $id => $item) {
-            $product = Product::find($id);
+        foreach ($cart as $key => $item) {
+            $product = Product::find($item['product_id']);
             if ($product) {
                 $itemTotal = $product->selling_price * $item['quantity'];
+                $subtotal += $itemTotal;
+
                 $cartItems[] = [
+                    'key' => $key,
                     'product' => $product,
                     'quantity' => $item['quantity'],
                     'size' => $item['size'],
                     'color' => $item['color'],
                     'total' => $itemTotal,
                 ];
-                $total += $itemTotal;
             }
         }
 
-        return view('frontend.shop-cart', compact('cartItems', 'total'));
+        $total = $subtotal; // Add shipping/tax here if needed
+
+        return view('frontend.shop-cart', compact('cartItems', 'subtotal', 'total'));
     }
+
     public static function getCartCount()
     {
         $cart = session()->get('cart', []);
@@ -43,7 +49,7 @@ class CartController extends Controller
 
         return $count;
     }
-    
+
     public function add(Request $request)
     {
         $request->validate([
@@ -55,9 +61,12 @@ class CartController extends Controller
 
         $product = Product::findOrFail($request->product_id);
 
-        // Check stock
         if ($product->stock_quantity < $request->quantity) {
-            return redirect()->back()->with('error', 'Insufficient stock available.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient stock available.',
+                'cart_count' => self::getCartCount()
+            ]);
         }
 
         $cart = Session::get('cart', []);
@@ -76,31 +85,64 @@ class CartController extends Controller
 
         Session::put('cart', $cart);
 
-        return redirect()->route('cart')->with('success', 'Product added to cart successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Product added to cart!',
+            'cart_count' => self::getCartCount(),
+            'product_name' => $product->name
+        ]);
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
+            'key' => 'required',
             'quantity' => 'required|integer|min:1',
         ]);
 
         $cart = Session::get('cart', []);
 
-        if (isset($cart[$request->product_id])) {
-            $cart[$request->product_id]['quantity'] = $request->quantity;
+        if (isset($cart[$request->key])) {
+            // Get product to check stock
+            $product = Product::find($cart[$request->key]['product_id']);
+
+            if ($product && $product->stock_quantity < $request->quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only ' . $product->stock_quantity . ' items in stock.'
+                ]);
+            }
+
+            $cart[$request->key]['quantity'] = $request->quantity;
             Session::put('cart', $cart);
+
+            // Calculate new totals
+            $itemTotal = $product->selling_price * $request->quantity;
+            $cartCount = self::getCartCount();
+
+            // Calculate new cart totals
+            $newSubtotal = 0;
+            foreach ($cart as $item) {
+                $prod = Product::find($item['product_id']);
+                if ($prod) {
+                    $newSubtotal += $prod->selling_price * $item['quantity'];
+                }
+            }
+            $newTotal = $newSubtotal;
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cart updated successfully!'
+                'message' => 'Cart updated!',
+                'cart_count' => $cartCount,
+                'item_total' => '$' . number_format($itemTotal, 2),
+                'subtotal' => '$' . number_format($newSubtotal, 2),
+                'total' => '$' . number_format($newTotal, 2)
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Product not found in cart!'
+            'message' => 'Item not found in cart!'
         ]);
     }
 
@@ -108,19 +150,67 @@ class CartController extends Controller
     {
         $cart = Session::get('cart', []);
 
-        if (isset($cart[$request->product_id])) {
-            unset($cart[$request->product_id]);
+        if (isset($cart[$request->key])) {
+            unset($cart[$request->key]);
             Session::put('cart', $cart);
 
-            return redirect()->route('cart')->with('success', 'Product removed from cart!');
+            // Calculate new totals
+            $newSubtotal = 0;
+            foreach ($cart as $item) {
+                $product = Product::find($item['product_id']);
+                if ($product) {
+                    $newSubtotal += $product->selling_price * $item['quantity'];
+                }
+            }
+            $newTotal = $newSubtotal;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart!',
+                'cart_count' => self::getCartCount(),
+                'subtotal' => '$' . number_format($newSubtotal, 2),
+                'total' => '$' . number_format($newTotal, 2)
+            ]);
         }
 
-        return redirect()->route('cart')->with('error', 'Product not found in cart!');
+        return response()->json([
+            'success' => false,
+            'message' => 'Item not found in cart!'
+        ]);
     }
 
     public function clear()
     {
         Session::forget('cart');
-        return redirect()->route('cart')->with('success', 'Cart cleared successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart cleared!',
+            'cart_count' => 0,
+            'subtotal' => '$0.00',
+            'total' => '$0.00'
+        ]);
+    }
+
+    public function getCartSummary()
+    {
+        $cart = Session::get('cart', []);
+        $cartCount = self::getCartCount();
+        $subtotal = 0;
+
+        foreach ($cart as $item) {
+            $product = Product::find($item['product_id']);
+            if ($product) {
+                $subtotal += $product->selling_price * $item['quantity'];
+            }
+        }
+
+        $total = $subtotal;
+
+        return response()->json([
+            'success' => true,
+            'cart_count' => $cartCount,
+            'subtotal' => '$' . number_format($subtotal, 2),
+            'total' => '$' . number_format($total, 2)
+        ]);
     }
 }

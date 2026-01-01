@@ -286,5 +286,225 @@ Created: Colorib
         $(".size__btn label").removeClass('active');
         $(this).addClass('active');
     });
+        /*------------------
+        Trend Section
+    --------------------*/
+
+    // Add to cart from trend items
+    $(document).on('click', '.trend__item .add-to-cart-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var $button = $(this);
+        var productId = $button.data('product-id');
+
+        if (!productId) return;
+
+        // Store original content
+        var originalHtml = $button.html();
+
+        // Show loading
+        $button.html('<i class="fa fa-spinner fa-spin"></i>');
+        $button.prop('disabled', true);
+
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            type: 'POST',
+            data: { product_id: productId, quantity: 1 },
+            success: function(response) {
+                // Update cart count
+                $('.tip').each(function() {
+                    $(this).text(response.cart_count || 0);
+                });
+
+                // Show success
+                alert('Product added to cart!');
+
+                // Reset button
+                setTimeout(() => {
+                    $button.html(originalHtml);
+                    $button.prop('disabled', false);
+                }, 500);
+            },
+            error: function() {
+                alert('Error adding to cart');
+                $button.html(originalHtml);
+                $button.prop('disabled', false);
+            }
+        });
+    });
+
+    // Hover effects for trend items
+    $(document).on('mouseenter', '.trend__item', function() {
+        $(this).css({
+            'transform': 'translateY(-5px)',
+            'transition': 'all 0.3s ease',
+            'box-shadow': '0 5px 15px rgba(0,0,0,0.1)'
+        });
+    }).on('mouseleave', '.trend__item', function() {
+        $(this).css({
+            'transform': 'translateY(0)',
+            'box-shadow': 'none'
+        });
+    });
+
+    // Initialize product filters in trend section
+    $('.filter__controls li').on('click', function() {
+        $('.filter__controls li').removeClass('active');
+        $(this).addClass('active');
+    });
+        /*--------------------------
+        Dynamic Countdown
+    ----------------------------*/
+    function initDiscountCountdown() {
+        const countdownEl = $('#countdown-time');
+
+        if (countdownEl.length && countdownEl.data('end-date')) {
+            const endDate = new Date(countdownEl.data('end-date')).getTime();
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = endDate - now;
+
+                if (distance < 0) {
+                    $('.countdown__item span').text('00');
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                $('#countdown-days').text(days.toString().padStart(2, '0'));
+                $('#countdown-hours').text(hours.toString().padStart(2, '0'));
+                $('#countdown-minutes').text(minutes.toString().padStart(2, '0'));
+                $('#countdown-seconds').text(seconds.toString().padStart(2, '0'));
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+    }
+
+    // Initialize on page load
+    $(window).on('load', function() {
+        initDiscountCountdown();
+    });
+        /*--------------------------
+        Discount Banner Slider
+    ----------------------------*/
+    function initDiscountSlider() {
+        if ($('#discount-slider').length) {
+            $('#discount-slider').owlCarousel({
+                loop: true,
+                items: 1,
+                dots: true,
+                nav: true,
+                navText: ['<i class="fa fa-chevron-left"></i>', '<i class="fa fa-chevron-right"></i>'],
+                smartSpeed: 800,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true,
+                margin: 0,
+                stagePadding: 0,
+                onInitialized: function(event) {
+                    initDiscountCountdowns();
+                },
+                onChanged: function(event) {
+                    initDiscountCountdowns();
+                }
+            });
+        }
+    }
+
+    /*--------------------------
+        Discount Countdowns
+    ----------------------------*/
+    function initDiscountCountdowns() {
+        $('.discount__countdown').each(function() {
+            const $this = $(this);
+            const endDate = $this.data('end-date');
+
+            if (!endDate) return;
+
+            const endDateTime = new Date(endDate).getTime();
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = endDateTime - now;
+
+                if (distance < 0) {
+                    $this.find('.countdown-days').text('00');
+                    $this.find('.countdown-hours').text('00');
+                    $this.find('.countdown-minutes').text('00');
+                    $this.find('.countdown-seconds').text('00');
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                $this.find('.countdown-days').text(days.toString().padStart(2, '0'));
+                $this.find('.countdown-hours').text(hours.toString().padStart(2, '0'));
+                $this.find('.countdown-minutes').text(minutes.toString().padStart(2, '0'));
+                $this.find('.countdown-seconds').text(seconds.toString().padStart(2, '0'));
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    }
+
+    // Initialize on page load
+    $(window).on('load', function() {
+        initDiscountSlider();
+    });
+    /* Instagram Slider */
+    function initInstagramSlider() {
+        if ($('.instagram__slider').length) {
+            $('.instagram__slider').owlCarousel({
+                loop: true,
+                margin: 10,
+                dots: true,
+                nav: true,
+                navText: ['<i class="fa fa-chevron-left"></i>', '<i class="fa fa-chevron-right"></i>'],
+                autoplay: true,
+                autoplayTimeout: 3000,
+                responsive: {
+                    0: { items: 2 },
+                    576: { items: 3 },
+                    768: { items: 4 },
+                    992: { items: 6 }
+                }
+            });
+        }
+    }
+
+    // Initialize
+    $(window).on('load', function() {
+        initInstagramSlider();
+    });
+    /* Fix Instagram square background images */
+function fixInstagramBackgrounds() {
+    $('.instagram__item[data-setbg]').each(function() {
+        var bg = $(this).data('setbg');
+        if (bg) {
+            $(this).css({
+                'background-image': 'url(' + bg + ')',
+                'background-position': 'center center',
+                'background-size': 'cover',
+                'background-repeat': 'no-repeat'
+            });
+        }
+    });
+}
+
+// Initialize
+$(document).ready(function() {
+    fixInstagramBackgrounds();
+});
 
 })(jQuery);

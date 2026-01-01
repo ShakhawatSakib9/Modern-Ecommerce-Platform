@@ -141,8 +141,33 @@
                             <p>Banners</p>
                         </a>
                     </li>
-                    <!-- End Banners Menu Item -->
 
+                    <!-- Add Discount Banners Menu Item Here -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.discount-banners.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.discount-banners.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-percent"></i>
+                            <p>Discount Banners</p>
+                        </a>
+                    </li>
+                    <!-- End Discount Banners Menu Item -->
+
+                    <!-- Services Menu Item -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.services.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-concierge-bell"></i>
+                            <p>Services</p>
+                        </a>
+                    </li>
+                    <!-- Instagram Posts Menu Item -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.instagram-posts.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.instagram-posts.*') ? 'active' : '' }}">
+                            <i class="nav-icon fab fa-instagram"></i>
+                            <p>Instagram Posts</p>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.products.index') }}"
                         class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
@@ -264,15 +289,26 @@
 
 <script>
     $(function () {
-        // Initialize DataTables
-        $('.datatable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
+        // Initialize DataTables only if not already initialized
+        $(document).ready(function() {
+            if (!$.fn.DataTable.isDataTable('.datatable')) {
+                $('.datatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "pageLength": 10,
+                    "language": {
+                        "paginate": {
+                            "previous": "‹",
+                            "next": "›"
+                        }
+                    }
+                });
+            }
         });
 
         // Initialize Select2

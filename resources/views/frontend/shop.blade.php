@@ -188,7 +188,7 @@
                                         @endif
                                         <ul class="product__hover">
                                             <li><a href="{{ $product->getFirstImageUrl() ?? asset('frontend/img/shop/shop-1.jpg') }}" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                            <li><a href="javascript:void(0)" class="wishlist-btn" data-product-id="{{ $product->id }}"><span class="icon_heart_alt"></span></a></li>
                                             <li><a href="#" class="add-to-cart-btn" data-product-id="{{ $product->id }}"><span class="icon_bag_alt"></span></a></li>
                                         </ul>
                                     </div>

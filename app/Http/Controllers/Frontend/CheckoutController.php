@@ -111,6 +111,35 @@ class CheckoutController extends Controller
         // Clear cart
         Session::forget('cart');
 
-        return redirect()->route('home')->with('success', 'Order placed successfully! Your order number is: ' . $order->order_number);
+        return redirect()->route('checkout.success', $order->order_number)->with('success', 'Order placed successfully!');
+    }
+
+    public function success($order_number)
+    {
+        $order = Order::where('order_number', $order_number)->firstOrFail();
+        return view('frontend.order-success', compact('order'));
+    }
+
+    public function trackForm()
+    {
+        return view('frontend.order-tracking');
+    }
+
+    public function trackOrder(Request $request)
+    {
+        $request->validate([
+            'order_number' => 'required|string',
+            'email' => 'required|email',
+        ]);
+
+        $order = Order::where('order_number', $request->order_number)
+            ->where('customer_email', $request->email)
+            ->first();
+
+        if (!$order) {
+            return back()->with('error', 'Order not found with these details.');
+        }
+
+        return view('frontend.order-tracking', compact('order'));
     }
 }

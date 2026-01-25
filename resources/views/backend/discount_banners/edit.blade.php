@@ -9,7 +9,10 @@
 @endsection
 
 @section('content')
-<div class="card">
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white glass border-bottom">
+        <h3 class="card-title text-primary font-weight-bold"><i class="fas fa-edit mr-2"></i>Edit Discount Banner: {{ $discountBanner->title }}</h3>
+    </div>
     <div class="card-body">
         <form action="{{ route('admin.discount-banners.update', $discountBanner->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -20,14 +23,14 @@
                     <div class="form-group">
                         <label for="title">Title *</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror"
-                               id="title" name="title" value="{{ old('title', $discountBanner->title) }}" required>
+                            id="title" name="title" value="{{ old('title', $discountBanner->title) }}" required>
                         @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-group">
                         <label for="subtitle">Subtitle</label>
                         <input type="text" class="form-control @error('subtitle') is-invalid @enderror"
-                               id="subtitle" name="subtitle" value="{{ old('subtitle', $discountBanner->subtitle) }}">
+                            id="subtitle" name="subtitle" value="{{ old('subtitle', $discountBanner->subtitle) }}">
                         @error('subtitle')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
@@ -35,8 +38,8 @@
                         <label for="discount_percentage">Discount Percentage *</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('discount_percentage') is-invalid @enderror"
-                                   id="discount_percentage" name="discount_percentage"
-                                   value="{{ old('discount_percentage', $discountBanner->discount_percentage) }}" min="1" max="99" required>
+                                id="discount_percentage" name="discount_percentage"
+                                value="{{ old('discount_percentage', $discountBanner->discount_percentage) }}" min="1" max="99" required>
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
@@ -47,7 +50,7 @@
                     <div class="form-group">
                         <label for="discount_code">Discount Code (Optional)</label>
                         <input type="text" class="form-control @error('discount_code') is-invalid @enderror"
-                               id="discount_code" name="discount_code" value="{{ old('discount_code', $discountBanner->discount_code) }}">
+                            id="discount_code" name="discount_code" value="{{ old('discount_code', $discountBanner->discount_code) }}">
                         @error('discount_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -57,7 +60,7 @@
                         <label>Current Image</label>
                         <div>
                             <img src="{{ $discountBanner->getImageUrl() }}" alt="{{ $discountBanner->title }}"
-                                 class="img-thumbnail" style="max-width: 200px;">
+                                class="img-thumbnail" style="max-width: 200px;">
                         </div>
                     </div>
 
@@ -65,7 +68,7 @@
                         <label for="image">Change Image</label>
                         <div class="custom-file">
                             <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
-                                   id="image" name="image" accept="image/*">
+                                id="image" name="image" accept="image/*">
                             <label class="custom-file-label" for="image">Choose new file</label>
                         </div>
                         @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -76,28 +79,28 @@
                     <div class="form-group">
                         <label for="end_date">End Date (Optional)</label>
                         <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror"
-                               id="end_date" name="end_date"
-                               value="{{ old('end_date', $discountBanner->end_date ? $discountBanner->end_date->format('Y-m-d\TH:i') : '') }}">
+                            id="end_date" name="end_date"
+                            value="{{ old('end_date', $discountBanner->end_date ? $discountBanner->end_date->format('Y-m-d\TH:i') : '') }}">
                         @error('end_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-group">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="is_active"
-                                   name="is_active" value="1" {{ old('is_active', $discountBanner->is_active) ? 'checked' : '' }}>
+                                name="is_active" value="1" {{ old('is_active', $discountBanner->is_active) ? 'checked' : '' }}>
                             <label class="custom-control-label" for="is_active">Active</label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Banner
-                </button>
-                <a href="{{ route('admin.discount-banners.index') }}" class="btn btn-secondary">
-                    Cancel
+            <div class="d-flex justify-content-between border-top pt-4 mt-2">
+                <a href="{{ route('admin.discount-banners.index') }}" class="btn btn-light shadow-sm px-4">
+                    <i class="fas fa-arrow-left mr-1"></i> Cancel
                 </a>
+                <button type="submit" class="btn btn-primary shadow-sm px-5 font-weight-bold">
+                    <i class="fas fa-save mr-1"></i> Update Banner
+                </button>
             </div>
         </form>
     </div>

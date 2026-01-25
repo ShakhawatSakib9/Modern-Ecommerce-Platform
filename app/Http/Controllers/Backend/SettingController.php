@@ -19,13 +19,16 @@ class SettingController extends Controller
     {
         $request->validate([
             'site_name' => 'required|string|max:255',
+            'about_text' => 'nullable|string',
             'site_email' => 'required|email|max:255',
             'site_phone' => 'required|string|max:20',
             'site_address' => 'required|string',
+            'google_map_url' => 'nullable|string',
             'delivery_charge' => 'required|numeric|min:0',
             'facebook_url' => 'nullable|url',
             'twitter_url' => 'nullable|url',
             'instagram_url' => 'nullable|url',
+            'pinterest_url' => 'nullable|url',
             'youtube_url' => 'nullable|url',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'favicon' => 'nullable|image|mimes:ico,png|max:1024',
@@ -61,13 +64,16 @@ class SettingController extends Controller
         }
 
         $settings->site_name = $request->site_name;
+        $settings->about_text = $request->about_text;
         $settings->site_email = $request->site_email;
         $settings->site_phone = $request->site_phone;
         $settings->site_address = $request->site_address;
+        $settings->google_map_url = $request->google_map_url;
         $settings->delivery_charge = $request->delivery_charge;
         $settings->facebook_url = $request->facebook_url;
         $settings->twitter_url = $request->twitter_url;
         $settings->instagram_url = $request->instagram_url;
+        $settings->pinterest_url = $request->pinterest_url;
         $settings->youtube_url = $request->youtube_url;
         $settings->meta_title = $request->meta_title;
         $settings->meta_description = $request->meta_description;

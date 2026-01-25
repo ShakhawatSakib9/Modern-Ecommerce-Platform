@@ -9,7 +9,10 @@
 @endsection
 
 @section('content')
-<div class="card">
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white glass border-bottom">
+        <h3 class="card-title text-primary font-weight-bold"><i class="fas fa-plus-circle mr-2"></i>New Instagram Post</h3>
+    </div>
     <div class="card-body">
         <form action="{{ route('admin.instagram-posts.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -20,7 +23,7 @@
                         <label for="image">Image *</label>
                         <div class="custom-file">
                             <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
-                                   id="image" name="image" accept="image/*" required>
+                                id="image" name="image" accept="image/*" required>
                             <label class="custom-file-label" for="image">Choose file</label>
                         </div>
                         @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -31,7 +34,7 @@
                     <div class="form-group">
                         <label for="caption">Caption</label>
                         <input type="text" class="form-control @error('caption') is-invalid @enderror"
-                               id="caption" name="caption" value="{{ old('caption') }}">
+                            id="caption" name="caption" value="{{ old('caption') }}">
                         @error('caption')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         <small class="form-text text-muted">Short caption for the post</small>
                     </div>
@@ -41,8 +44,8 @@
                     <div class="form-group">
                         <label for="link">Instagram Post URL</label>
                         <input type="url" class="form-control @error('link') is-invalid @enderror"
-                               id="link" name="link" value="{{ old('link') }}"
-                               placeholder="https://instagram.com/p/...">
+                            id="link" name="link" value="{{ old('link') }}"
+                            placeholder="https://instagram.com/p/...">
                         @error('link')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         <small class="form-text text-muted">Link to actual Instagram post (optional)</small>
                     </div>
@@ -70,13 +73,13 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Save Post
-                </button>
-                <a href="{{ route('admin.instagram-posts.index') }}" class="btn btn-secondary">
-                    Cancel
+            <div class="d-flex justify-content-between border-top pt-4 mt-2">
+                <a href="{{ route('admin.instagram-posts.index') }}" class="btn btn-light shadow-sm px-4">
+                    <i class="fas fa-arrow-left mr-1"></i> Cancel
                 </a>
+                <button type="submit" class="btn btn-primary shadow-sm px-5 font-weight-bold">
+                    <i class="fas fa-save mr-1"></i> Save Post
+                </button>
             </div>
         </form>
     </div>

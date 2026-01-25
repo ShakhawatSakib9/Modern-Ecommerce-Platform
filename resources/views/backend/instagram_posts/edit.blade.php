@@ -9,7 +9,10 @@
 @endsection
 
 @section('content')
-<div class="card">
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white glass border-bottom">
+        <h3 class="card-title text-primary font-weight-bold"><i class="fas fa-edit mr-2"></i>Edit Instagram Post</h3>
+    </div>
     <div class="card-body">
         <form action="{{ route('admin.instagram-posts.update', $instagramPost->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -21,8 +24,8 @@
                         <label>Current Image</label>
                         <div>
                             <img src="{{ $instagramPost->getImageUrl() }}"
-                                 alt="{{ $instagramPost->caption ?? 'Instagram Post' }}"
-                                 class="img-thumbnail" style="max-width: 200px;">
+                                alt="{{ $instagramPost->caption ?? 'Instagram Post' }}"
+                                class="img-thumbnail" style="max-width: 200px;">
                         </div>
                     </div>
 
@@ -30,7 +33,7 @@
                         <label for="image">Change Image</label>
                         <div class="custom-file">
                             <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
-                                   id="image" name="image" accept="image/*">
+                                id="image" name="image" accept="image/*">
                             <label class="custom-file-label" for="image">Choose new file</label>
                         </div>
                         @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -41,7 +44,7 @@
                     <div class="form-group">
                         <label for="caption">Caption</label>
                         <input type="text" class="form-control @error('caption') is-invalid @enderror"
-                               id="caption" name="caption" value="{{ old('caption', $instagramPost->caption) }}">
+                            id="caption" name="caption" value="{{ old('caption', $instagramPost->caption) }}">
                         @error('caption')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -50,8 +53,8 @@
                     <div class="form-group">
                         <label for="link">Instagram Post URL</label>
                         <input type="url" class="form-control @error('link') is-invalid @enderror"
-                               id="link" name="link" value="{{ old('link', $instagramPost->link) }}"
-                               placeholder="https://instagram.com/p/...">
+                            id="link" name="link" value="{{ old('link', $instagramPost->link) }}"
+                            placeholder="https://instagram.com/p/...">
                         @error('link')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
@@ -60,7 +63,7 @@
                             <div class="form-group">
                                 <label for="order">Order *</label>
                                 <input type="number" class="form-control @error('order') is-invalid @enderror"
-                                       id="order" name="order" value="{{ old('order', $instagramPost->order) }}" min="1" required>
+                                    id="order" name="order" value="{{ old('order', $instagramPost->order) }}" min="1" required>
                                 @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -68,8 +71,8 @@
                             <div class="form-group">
                                 <div class="custom-control custom-switch mt-4">
                                     <input type="checkbox" class="custom-control-input"
-                                           id="is_active" name="is_active" value="1"
-                                           {{ old('is_active', $instagramPost->is_active) ? 'checked' : '' }}>
+                                        id="is_active" name="is_active" value="1"
+                                        {{ old('is_active', $instagramPost->is_active) ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="is_active">Active</label>
                                 </div>
                             </div>
@@ -78,13 +81,13 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Post
-                </button>
-                <a href="{{ route('admin.instagram-posts.index') }}" class="btn btn-secondary">
-                    Cancel
+            <div class="d-flex justify-content-between border-top pt-4 mt-2">
+                <a href="{{ route('admin.instagram-posts.index') }}" class="btn btn-light shadow-sm px-4">
+                    <i class="fas fa-arrow-left mr-1"></i> Cancel
                 </a>
+                <button type="submit" class="btn btn-primary shadow-sm px-5 font-weight-bold">
+                    <i class="fas fa-save mr-1"></i> Update Post
+                </button>
             </div>
         </form>
     </div>

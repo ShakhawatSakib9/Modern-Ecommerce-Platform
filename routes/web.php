@@ -17,7 +17,11 @@ use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\DiscountBannerController;
 use App\Http\Controllers\Backend\ServiceController;
 use App\Http\Controllers\Backend\InstagramPostController;
-
+use App\Http\Controllers\Frontend\WishlistController;
+use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\Backend\BlogCategoryController;
+use App\Http\Controllers\Backend\BlogManagementController;
+use App\Http\Controllers\Backend\ReportController;
 /*
 |--------------------------------------------------------------------------
 | Frontend Routes
@@ -42,39 +46,59 @@ Route::get('/cart/summary', [CartController::class, 'getCartSummary'])->name('ca
 // Checkout Routes
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
+Route::get('/checkout/success/{order_number}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/order-track', [CheckoutController::class, 'trackForm'])->name('order.track');
+Route::post('/order-track', [CheckoutController::class, 'trackOrder'])->name('order.track.post');
 
 // Contact Routes
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
-
-// Blog Routes (Static for now)
-Route::get('/blog', function () {
-    return view('frontend.blog');
-})->name('blog');
-
-Route::get('/blog-details', function () {
-    return view('frontend.blog-details');
-})->name('blog.details');
-
-// About Page (Static)
+// Wishlist Routes
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+Route::post('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
+Route::get('/wishlist/count', [WishlistController::class, 'getCount'])->name('wishlist.count');
+Route::post('/wishlist/check', [WishlistController::class, 'check'])->name('wishlist.check');
+// Static Pages
 Route::get('/about', function () {
     return view('frontend.about');
 })->name('about');
 
-// FAQ Page (Static)
-Route::get('/faq', function () {
-    return view('frontend.faq');
-})->name('faq');
+// Blog Routes (Dynamic)
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.details');
+Route::post('/blog/{slug}/comment', [BlogController::class, 'storeComment'])->name('blog.comment.store');
+Route::get('/blog-search', [BlogController::class, 'search'])->name('blog.search');
 
-// Terms & Conditions (Static)
-Route::get('/terms', function () {
-    return view('frontend.terms');
-})->name('terms');
+// // Blog Routes (Static for now)
+// Route::get('/blog', function () {
+//     return view('frontend.blog');
+// })->name('blog');
 
-// Privacy Policy (Static)
-Route::get('/privacy', function () {
-    return view('frontend.privacy');
-})->name('privacy');
+// Route::get('/blog-details', function () {
+//     return view('frontend.blog-details');
+// })->name('blog.details');
+
+// // About Page (Static)
+// Route::get('/about', function () {
+//     return view('frontend.about');
+// })->name('about');
+
+// // FAQ Page (Static)
+// Route::get('/faq', function () {
+//     return view('frontend.faq');
+// })->name('faq');
+
+// // Terms & Conditions (Static)
+// Route::get('/terms', function () {
+//     return view('frontend.terms');
+// })->name('terms');
+
+// // Privacy Policy (Static)
+// Route::get('/privacy', function () {
+//     return view('frontend.privacy');
+// })->name('privacy');
 
 /*
 |--------------------------------------------------------------------------
@@ -137,6 +161,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Instagram Posts
         Route::resource('instagram-posts', InstagramPostController::class);
         Route::post('instagram-posts/{instagramPost}/toggle-status', [InstagramPostController::class, 'toggleStatus'])->name('instagram-posts.toggle-status');
+        // Blog Management Routes
+        Route::resource('blogs', BlogManagementController::class);
+        Route::post('blogs/{blog}/toggle-status', [BlogManagementController::class, 'toggleStatus'])->name('blogs.toggle-status');
+        Route::post('blogs/{blog}/toggle-featured', [BlogManagementController::class, 'toggleFeatured'])->name('blogs.toggle-featured');
+
+        // Blog Comments Routes
+        Route::get('blog-comments', [BlogManagementController::class, 'comments'])->name('blog-comments.index');
+        Route::post('blog-comments/{comment}/toggle-approval', [BlogManagementController::class, 'toggleCommentApproval'])->name('blog-comments.toggle-approval');
+        Route::delete('blog-comments/{comment}', [BlogManagementController::class, 'destroyComment'])->name('blog-comments.destroy');
+
+        // Blog Categories Routes
+        Route::resource('blog-categories', BlogCategoryController::class);
+        Route::post('blog-categories/{blogCategory}/toggle-status', [BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle-status');
+
+        // Reports Routes
+        Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+
+        // Contact Messages Routes
+        Route::get('contact-messages', [App\Http\Controllers\Backend\ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::get('contact-messages/{id}', [App\Http\Controllers\Backend\ContactMessageController::class, 'show'])->name('contact-messages.show');
+        Route::post('contact-messages/{id}/toggle-read', [App\Http\Controllers\Backend\ContactMessageController::class, 'toggleRead'])->name('contact-messages.toggle-read');
+        Route::delete('contact-messages/{id}', [App\Http\Controllers\Backend\ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
     });
 });
 

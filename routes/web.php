@@ -45,14 +45,18 @@ Route::get('/cart/summary', [CartController::class, 'getCartSummary'])->name('ca
 
 // Checkout Routes
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
+Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])
+    ->middleware('throttle:10,1') // 10 orders per minute max
+    ->name('checkout.place-order');
 Route::get('/checkout/success/{order_number}', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::get('/order-track', [CheckoutController::class, 'trackForm'])->name('order.track');
 Route::post('/order-track', [CheckoutController::class, 'trackOrder'])->name('order.track.post');
 
 // Contact Routes
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/contact/send', [ContactController::class, 'send'])
+    ->middleware('throttle:3,1') // 3 submissions per minute
+    ->name('contact.send');
 // Wishlist Routes
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
@@ -109,7 +113,9 @@ Route::get('/blog-search', [BlogController::class, 'search'])->name('blog.search
 // Admin Login Routes (no auth required)
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:5,1') // 5 attempts per minute
+        ->name('login.submit');
 });
 
 // Protected Admin Routes (require admin auth)

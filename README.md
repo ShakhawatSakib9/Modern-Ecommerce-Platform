@@ -1,13 +1,13 @@
-﻿# 🛒 Innoflexia — Modern Full-Stack E-Commerce & Business Management Platform
+﻿# 🛒 Innoflexia — Full-Stack E-Commerce & Retail Management Platform
 
 [![Laravel](https://img.shields.io/badge/Laravel_12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP_8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
 [![MySQL](https://img.shields.io/badge/MySQL_8.x-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![ApexCharts](https://img.shields.io/badge/ApexCharts-Analytics-00b4d8?style=for-the-badge)]()
-[![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=for-the-badge)]()
+[![Status](https://img.shields.io/badge/Status-Active_Development-success?style=for-the-badge)]()
 
-> **A production-ready, full-stack E-Commerce & Retail Management platform built with Laravel 12, PHP 8.2+, MySQL, Blade, and Vite — featuring a high-conversion storefront, dynamic product variants, session-driven cart and checkout pipeline, interactive ApexCharts business analytics, and a multi-guard administration control panel.**
+> **A full-stack E-Commerce & Retail Management platform built with Laravel 12, PHP 8.2+, MySQL, Blade, and Vite — featuring a high-conversion storefront, dynamic product variants, session-driven cart and checkout pipeline, interactive ApexCharts business analytics, and a multi-guard administration control panel.**
 
 ---
 
@@ -15,14 +15,16 @@
 
 1. [Platform Overview](#-platform-overview)
 2. [System Architecture](#-system-architecture)
-3. [Customer Storefront Features](#-customer-storefront-features)
-4. [Admin Management & Business Analytics](#-admin-management--business-analytics)
-5. [Order Lifecycle State Machine](#-order-lifecycle-state-machine)
-6. [Database Schema & Entity Relationships](#-database-schema--entity-relationships)
-7. [Security & Protection Architecture](#-security--protection-architecture)
-8. [Tech Stack](#-tech-stack)
-9. [Installation & Local Setup](#-installation--local-setup)
-10. [Author & Contributions](#-author--contributions)
+3. [Engineering Highlights](#-engineering-highlights)
+4. [Customer Storefront Features](#-customer-storefront-features)
+5. [Admin Management & Business Analytics](#-admin-management--business-analytics)
+6. [Order Lifecycle State Machine](#-order-lifecycle-state-machine)
+7. [Database Schema & Entity Relationships](#-database-schema--entity-relationships)
+8. [Security & Protection Architecture](#-security--protection-architecture)
+9. [Testing & Quality Assurance](#-testing--quality-assurance)
+10. [Tech Stack](#-tech-stack)
+11. [Installation & Local Setup](#-installation--local-setup)
+12. [Author & Contributions](#-author--contributions)
 
 ---
 
@@ -87,6 +89,21 @@ graph TB
     ClientLayer --> SecurityMiddleware --> ControllerLayer
     ControllerLayer --> DomainModels --> PersistenceLayer
 ```
+
+---
+
+## ⚙️ Engineering Highlights
+
+- **Separated Domain Workflows:** Designed a modular Laravel MVC architecture strictly partitioning customer storefront operations from administrative back-office management.
+- **Dedicated Admin Authentication Guard:** Implemented an isolated `auth:admin` guard with separate session state and authentication rules from public users.
+- **Controlled Order State Transitions:** Engineered a multi-stage order lifecycle (`Pending` → `Confirmed` → `Processing` → `Delivered` → `Cancelled`) with auditable status changes.
+- **Historical Price Snapshotting:** Order items store immutable unit price snapshots at the exact moment of checkout, ensuring historical reporting integrity regardless of subsequent catalog price changes.
+- **Relational Data Integrity:** Utilized Eloquent ORM relationships (`hasMany`, `belongsTo`) backed by database foreign key constraints to maintain referential consistency.
+- **Session-Based Cart State:** Built a responsive, session-driven shopping cart with real-time subtotal, delivery fee calculation, and dynamic AJAX-driven count updates.
+- **Flexible Variant Architecture:** Modeled product attributes (`sizes`, `colors`, `images`) using Eloquent JSON attribute casting, supporting multi-variant products without relational table bloat.
+- **Brute-Force Rate Limiting:** Enforced throttling middleware on security-sensitive entry points (`throttle:5,1` on admin login, `throttle:3,1` on contact submissions).
+- **Interactive Business Intelligence:** Integrated **ApexCharts** to deliver real-time visual analytics for sales velocity, category volume distribution, and inventory stockout warnings.
+- **Secure File Upload Handling:** Built image upload workflows for products and banners with file validation, unique naming, and storage management.
 
 ---
 
@@ -164,7 +181,7 @@ stateDiagram-v2
     Delivered --> [*]
 ```
 
-- **Automated Order Number Generation:** Generates unique order references (e.g., `ORD-20260903-XXXX`).
+- **Automated Order Number Generation:** Generates unique order references (e.g., `ORD-YYYYMMDD-XXXX`).
 - **Printable Invoices:** One-click HTML/PDF formatted order invoice generation for packing slips.
 
 ---
@@ -194,14 +211,31 @@ settings (global store configuration)
 
 ## 🔐 Security & Protection Architecture
 
-| Protection Layer | Implementation Details |
+| Protection Area | Implementation Strategy |
 |---|---|
-| **Authentication Separation** | Multi-guard architecture isolating public customer sessions from the `admin` guard. |
-| **Brute-Force Rate Limiting** | `throttle:5,1` on Admin Login and `throttle:3,1` on Contact form submissions. |
-| **SQL Injection Prevention** | 100% Eloquent ORM parameterized queries and prepared statements. |
-| **Cross-Site Scripting (XSS)** | Blade auto-escaping syntax `{{ }}` on all user-generated content. |
-| **CSRF Defense** | Automatic token validation across all state-changing HTTP `POST`, `PUT`, and `DELETE` routes. |
-| **Password Security** | Bcrypt hashing with automated salt generation for all administrator accounts. |
+| **Authentication Separation** | Multi-guard architecture isolating public customer sessions from the `auth:admin` guard. |
+| **Brute-Force Rate Limiting** | Route-level throttling on authentication (`throttle:5,1`) and contact submissions (`throttle:3,1`). |
+| **SQL Injection Protection** | Database interactions are primarily handled through Eloquent ORM and parameterized query bindings. |
+| **XSS Defense** | Blade auto-escaping syntax `{{ }}` is applied across rendered user-controlled inputs. |
+| **CSRF Defense** | Token verification is enforced across all state-modifying HTTP methods (`POST`, `PUT`, `DELETE`). |
+| **Password Security** | Bcrypt hashing algorithm applied to all administrative account credentials. |
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+The application uses PHPUnit for automated testing across key feature workflows:
+
+```bash
+# Run the complete test suite
+php artisan test
+```
+
+### Core Test Coverage Areas:
+- **Authentication:** Admin login, failed attempts, throttling, and session validation.
+- **Catalog & Products:** Product listing, category filtering, and variant attribute queries.
+- **Cart & Checkout:** Session cart calculations, order placement, and order item creation.
+- **Order Management:** Status transition validation and invoice generation.
 
 ---
 
@@ -214,7 +248,7 @@ settings (global store configuration)
 | **Frontend Architecture** | Blade Templates, Vite, Vanilla JavaScript ES6+, Bootstrap 4/5 |
 | **Data Visualization** | ApexCharts JS (Interactive Revenue & Category Charts) |
 | **Asset Pipeline** | Vite (Modern ES module bundler) |
-| **Tooling** | Composer, NPM, Artisan CLI, PHPUnit |
+| **Testing & Tooling** | PHPUnit, Composer, NPM, Artisan CLI |
 
 ---
 
@@ -230,8 +264,8 @@ settings (global store configuration)
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/ShakhawatSakib9/c-ecom.git
-   cd c-ecom
+   git clone https://github.com/ShakhawatSakib9/Modern-Ecommerce-Platform.git
+   cd Modern-Ecommerce-Platform
    ```
 
 2. **Install PHP and Node dependencies:**
